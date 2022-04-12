@@ -1,0 +1,71 @@
+{
+  "text": [],
+  "dur": [
+    {
+      "Sonuc": "DurdurAction",
+      "id": 1
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 2
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 3
+    },
+    {
+      "Sonuc": "Post Et",
+      "id": 4
+    },
+    {
+      "Sonuc": "gonder",
+      "id": 5
+    },
+    {
+      "Sonuc": "",
+      "id": 6
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 7
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 8
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 9
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 10
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 11
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 12
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 13
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 14
+    },
+    {
+      "Sonuc": "DurdurAction",
+      "id": 15
+    }
+  ],
+  "iptal": [
+    {
+      "Sonuc": "IptalAction",
+      "id": 1
+    }
+  ]
+}

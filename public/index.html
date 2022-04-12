@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Berteks Sesli Not Sistemi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="shortcut icon" href="./images.png" type="image/png" />
+
+  <style>
+    audio {
+      display: block;
+      margin: 5px;
+    }
+
+    body {
+      background-image: url('./bground.png');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: top;
+    }
+  </style>
+
+</head>
+
+<body>
+  <center>
+    <br />
+    <br />
+    <br /><br /><br /><br /><br />
+    <div>
+      <h1>Sesli Not Kayıt Sistemi</h1>
+    </div>
+    <br />
+    <br />
+
+    <button id="record" class="btn btn-success">Başlat</button>
+    <button id="stop" class="btn btn-danger" hidden>Durdur</button>
+    <button id="kaydet" class="btn btn-primary" hidden>Kaydet</button>
+    <button id="vazgec" class="btn btn-primary">Vazgeç</button>
+
+    <div class="container">
+      <div class="app">
+        <div class="input-single">
+          <textarea id="note-textarea" placeholder="Başlat butonuna basarak notunuzu oluşturmaya başlayabilirsiniz..."
+            rows="6"></textarea>
+        </div>
+      </div>
+  </center>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="script.js"></script>
+
+  <script>
+    const recordAudio = () =>
+      new Promise(async resolve => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        let audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+          audioChunks.push(event.data);
+        });
+
+        const start = () => {
+          audioChunks = [];
+          mediaRecorder.start();
+        };
+
+        const stop = () =>
+          new Promise(resolve => {
+            mediaRecorder.addEventListener('stop', () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+              const audioUrl = URL.createObjectURL(audioBlob);
+              const audio = new Audio(audioUrl);
+              const play = () => audio.play();
+              resolve({ audioChunks, audioBlob, audioUrl, play });
+            });
+            mediaRecorder.stop();
+          });
+        resolve({ start, stop });
+      });
+
+    const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+
+    const recordButton = document.querySelector('#record');
+    const stopButton = document.querySelector('#stop');
+    const kaydetButton = document.querySelector('#kaydet');
+    const vazgecButton = document.querySelector('#vazgec');
+
+    let recorder;
+    let audio;
+
+    recordButton.addEventListener('click', async () => {
+      recordButton.setAttribute('hidden', true);
+      stopButton.removeAttribute('hidden');
+      kaydetButton.setAttribute('hidden', true);
+      if (!recorder) {
+        recorder = await recordAudio();
+      }
+      recorder.start();
+    });
+
+    stopButton.addEventListener('click', async () => {
+      recordButton.setAttribute('hidden', true);
+      stopButton.setAttribute('hidden', true);
+      kaydetButton.removeAttribute('hidden');
+      audio = await recorder.stop();
+    });
+
+    kaydetButton.addEventListener('click', async () => {
+      recordButton.setAttribute('hidden', true);
+      stopButton.setAttribute('hidden', true);
+      kaydetButton.setAttribute('hidden', true);
+      vazgecButton.setAttribute('hidden', true);
+      dbJsonKaydet();
+      console.log("Kaydedildi.");
+    });
+
+    vazgecButton.addEventListener('click', async () => {
+      recordButton.setAttribute('hidden', true);
+      stopButton.setAttribute('hidden', true);
+      kaydetButton.setAttribute('hidden', true);
+      vazgecButton.setAttribute('hidden', true);
+    });
+
+    function dbJsonKaydet() {
+      if (document.getElementById("note-textarea").value != "") {
+        const params =
+        {
+          Tarih: new Date().toLocaleString(),
+          Ses: noteContent
+        }
+        const http = new XMLHttpRequest()
+        http.open('POST', 'http://localhost:3000/text/')
+        http.setRequestHeader('Content-type', 'application/json')
+        http.send(JSON.stringify(params))
+
+        document.getElementById("note-textarea").value = ""
+      }
+
+      else if (document.getElementById("note-textarea").value == "") {
+        const params =
+        {
+          Tarih: new Date().toLocaleString(),
+          Ses: "Ses Girişi Yok"
+        }
+        const http = new XMLHttpRequest()
+        http.open('POST', 'http://localhost:3000/text/')
+        http.setRequestHeader('Content-type', 'application/json')
+        http.send(JSON.stringify(params))
+      }
+    }
+  </script>
+</body>
+
+</html>
