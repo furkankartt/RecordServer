@@ -1,1 +1,3 @@
 # RecordServer
+
+++Komut Satırını Açıyoruz
